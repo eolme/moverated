@@ -1,0 +1,25 @@
+{
+  "name": "moverated",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./lib/moverated.cjs",
+  "module": "./lib/moverated.js",
+  "types": "./lib/moverated.d.ts",
+  "exports": {
+    "types": "./lib/moverated.d.ts",
+    "module": "./lib/moverated.js",
+    "import": "./lib/moverated.js",
+    "require": "./lib/moverated.cjs",
+    "default": "./lib/moverated.cjs"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build:docs": "vite build --outDir=docs/public",
+    "build": "bunchee"
+  },
+  "devDependencies": {
+    "bunchee": "^3.2.1",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9"
+  }
+}

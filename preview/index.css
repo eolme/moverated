@@ -1,0 +1,92 @@
+body {
+  --background-color: rgb(255, 255, 255);
+  --cell-color: rgba(0, 0, 0, 0.1);
+  --box-color: rgba(0, 0, 0, 0.4);
+  --color: rgba(0, 0, 0, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --background-color: rgb(25, 25, 26);
+    --cell-color: rgb(225, 227, 230, 0.1);
+    --box-color: rgba(225, 227, 230, 0.4);
+    --color: rgba(225, 227, 230, 1);
+  }
+}
+
+body {
+  touch-action: none;
+  user-select: none;
+  cursor: move;
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--background-color);
+  background-image: linear-gradient(0deg, var(--cell-color) 1px, transparent 1px), linear-gradient(90deg, var(--cell-color) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+  background-position: -1px -1px, -1px -1px;
+}
+
+body, pre {
+  margin: 0;
+  padding: 0;
+
+  color: var(--color);
+  font-family: monospace, monospace;
+
+  font-size: 16px;
+  line-height: 20px;
+}
+
+#debug {
+  position: absolute;
+
+  top: 10px;
+  left: 10px;
+}
+
+#comb {
+  position: absolute;
+
+  bottom: 10px;
+  left: 10px;
+}
+
+#info {
+  height: 20px;
+}
+
+#link {
+  display: inline-block;
+  margin-top: 20px;
+
+  color: var(--color);
+  text-decoration: underline;
+}
+
+.block {
+  height: 140px;
+}
+
+.title {
+  display: inline-block;
+  margin: 20px 0;
+}
+
+#box {
+  position: absolute;
+
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
+
+  width: 100px;
+  height: 100px;
+
+  background-color: var(--box-color);
+}
