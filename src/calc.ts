@@ -1,4 +1,4 @@
-import { RAD_TO_DEG } from "./const.js";
+import { RAD_TO_DEG } from './const.js';
 
 export const calculateDegrees = (radians: number) => RAD_TO_DEG * radians;
 
@@ -7,7 +7,7 @@ const calculateAngleBetween = (
   ay: number,
   bx: number,
   by: number
-) => Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
+) => Math.atan2((ax * by) - (ay * bx), (ax * bx) + (ay * by));
 
 export const calculateAngleDelta = (
   ax: number,
@@ -18,7 +18,7 @@ export const calculateAngleDelta = (
   cy: number
 ) => calculateDegrees(calculateAngleBetween(bx - ax, by - ay, cx - ax, cy - ay));
 
-const calculateHypot = Math.hypot || ((a: number, b: number) => Math.sqrt(a * a + b * b));
+const calculateHypot = Math.hypot || ((a: number, b: number) => Math.sqrt((a * a) + (b * b)));
 
 const calculateDistance = (
   ax: number,

@@ -1,6 +1,6 @@
 import type {
   MoveratedHandler,
-  MoveratedPointer,
+  MoveratedPointer
 } from './types.js';
 
 import type {
@@ -119,6 +119,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
     const id = event.pointerId;
 
     const pointerIndex = fastFindPointer(id);
+
     if (pointerIndex !== UNKNOWN) {
       activePointers.splice(pointerIndex, 1);
     }
@@ -182,7 +183,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
       nextY
     );
 
-    const deltaScale = lastScale * scaleFactor - lastScale;
+    const deltaScale = (lastScale * scaleFactor) - lastScale;
 
     const deltaRotate = calculateAngleDelta(
       activePointer.x,
@@ -256,13 +257,13 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
         return;
       }
-    
-      const deltaScale = lastScale * factor - lastScale;
-      
+
+      const deltaScale = (lastScale * factor) - lastScale;
+
       lastScale *= factor;
 
       handle(0, 0, deltaScale, 0);
-      
+
       return;
     }
 
@@ -279,7 +280,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
     listen('pointerup', disposePointer),
     listen('pointerleave', disposePointer),
     listen('pointermove', handlePointer),
-    listen('wheel', handleWheel) 
+    listen('wheel', handleWheel)
   ];
 
   if (needGesture) {

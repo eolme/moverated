@@ -1,24 +1,53 @@
 {
   "name": "moverated",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "./lib/moverated.cjs",
   "module": "./lib/moverated.js",
   "types": "./lib/moverated.d.ts",
   "exports": {
-    "types": "./lib/moverated.d.ts",
-    "module": "./lib/moverated.js",
-    "import": "./lib/moverated.js",
-    "require": "./lib/moverated.cjs",
-    "default": "./lib/moverated.cjs"
+    ".": {
+      "types": "./lib/moverated.d.ts",
+      "module": "./lib/moverated.js",
+      "import": "./lib/moverated.js",
+      "default": "./lib/moverated.cjs"
+    },
+    "./package.json": "./package.json"
   },
+  "author": {
+    "name": "Anton Petrov",
+    "email": "im@petrov.engineer",
+    "url": "https://petrov.engineer"
+  },
+  "description": "Lightweight unified movement, scaling and rotation",
+  "license": "MIT",
+  "keywords": [
+    "unified",
+    "touch",
+    "wheel",
+    "move",
+    "scale",
+    "rotate",
+    "gesture"
+  ],
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/eolme/moverated",
+  "bugs": "https://github.com/eolme/moverated/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eolme/moverated.git"
+  },
+  "sideEffects": false,
   "scripts": {
     "dev": "vite dev",
     "build:docs": "vite build --outDir=docs/public",
     "build": "bunchee"
   },
   "devDependencies": {
+    "@mntm/eslint-config": "^1.4.0",
     "bunchee": "^3.2.1",
+    "eslint": "^8.42.0",
     "typescript": "^5.1.3",
     "vite": "^4.3.9"
   }

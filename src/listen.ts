@@ -1,7 +1,7 @@
 export type GestureEvent = WheelEvent & {
   rotation: number;
   scale: number;
-}
+};
 
 export type MoveratedUnlisten = () => void;
 
@@ -27,5 +27,5 @@ export const listenBind = (el: EventTarget): MoveratedListen => (name, listener)
 
   return () => {
     el.removeEventListener(name, listen, listenOptions);
-  }
+  };
 };

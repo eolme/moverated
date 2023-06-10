@@ -1,9 +1,9 @@
-import { UNKNOWN } from "./const.js";
+import { UNKNOWN } from './const.js';
 
 type FutureNavigator = Navigator & {
   userAgentData?: {
-    platform: string
-  }
+    platform: string;
+  };
 };
 
 type GlobalContext = {

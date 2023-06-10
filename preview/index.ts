@@ -9,8 +9,8 @@ import { needGesture, needMultiTouch } from '../src/detect.js';
 
 const $ = (id: string): HTMLElement => document.getElementById(id)!;
 
-const value = (move: Moverated, key: keyof Moverated) => `${key}:${'\u00A0'.repeat(move[key] < 0 ? 1 : 2)}${move[key].toFixed(3)}`; 
-const print = (...values: string[]) => values.join('\n'); 
+const value = (move: Moverated, key: keyof Moverated) => `${key}:${'\u00A0'.repeat(move[key] < 0 ? 1 : 2)}${move[key].toFixed(3)}`;
+const print = (...values: string[]) => values.join('\n');
 
 const info = $('info');
 const box = $('box');
