@@ -44,9 +44,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
   const createFastPointerFind = (compare: (a: number, b: number) => boolean) => (id: number) => {
     for (let i = 0, length = activePointers.length; i < length; ++i) {
-      const pointer = activePointers[i];
-
-      if (compare(pointer.p, id)) {
+      if (compare(activePointers[i].p, id)) {
         return i;
       }
     }
