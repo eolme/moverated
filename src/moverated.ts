@@ -14,7 +14,6 @@ import {
 
 import {
   calculateAngleDelta,
-  calculateDegrees,
   calculateDistanceFactor,
   calculateExpFactor
 } from './calc.js';
@@ -84,12 +83,15 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
   const handleGesture = (event: GestureEvent) => {
     const deltaX = event.screenX - lastGestureX;
     const deltaY = event.screenY - lastGestureY;
-    const deltaScale = event.scale - lastGestureScale;
     const deltaRotate = event.rotation - lastGestureRotate;
+
+    const scaleFactor = event.scale - lastGestureScale;
+    const nextScale = Math.max(0, lastScale + scaleFactor);
+    const deltaScale = nextScale - lastScale;
 
     lastX += deltaX;
     lastY += deltaY;
-    lastScale += deltaScale;
+    lastScale = nextScale;
     lastRotate += deltaRotate;
 
     updateGesture(event);
@@ -212,24 +214,18 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
   };
 
   const handleWheel = (event: WheelEvent) => {
-    let deltaMulti = 1;
+    const deltaMulti = event.deltaMode > 0 ? -100 : -1;
 
-    const deltaMode = event.deltaMode;
+    const deltaX = deltaMulti * event.deltaX;
+    const deltaY = deltaMulti * event.deltaY;
+    const deltaZ = deltaMulti * event.deltaZ;
 
-    if (deltaMode === 1) {
-      deltaMulti = 16;
-    }
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    const absZ = Math.abs(deltaZ);
 
-    if (deltaMode === 2) {
-      deltaMulti = 32;
-    }
-
-    const deltaZ = event.deltaZ;
-
-    if (deltaZ !== 0) {
-      const reverseFactor = calculateExpFactor(deltaZ * deltaMulti);
-
-      const deltaRotate = calculateDegrees(reverseFactor - 1);
+    if (absZ !== 0) {
+      const deltaRotate = 0.15 * deltaZ;
 
       lastRotate += deltaRotate;
 
@@ -238,18 +234,11 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
       return;
     }
 
-    const deltaX = deltaMulti * event.deltaX;
-    const deltaY = deltaMulti * event.deltaY;
-
     if (event.ctrlKey) {
-      const absX = Math.abs(deltaX);
-      const absY = Math.abs(deltaY);
-
       const delta = absX > absY ? deltaX : deltaY;
-      const factor = calculateExpFactor(delta);
 
       if (event.shiftKey) {
-        const deltaRotate = calculateDegrees(1 - factor);
+        const deltaRotate = 0.15 * delta;
 
         lastRotate += deltaRotate;
 
@@ -258,9 +247,11 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
         return;
       }
 
-      const deltaScale = (lastScale * factor) - lastScale;
+      const scaleFactor = calculateExpFactor(delta);
+      const nextScale = Math.max(0, lastScale + scaleFactor);
+      const deltaScale = nextScale - lastScale;
 
-      lastScale *= factor;
+      lastScale = nextScale;
 
       handle(0, 0, deltaScale, 0);
 
@@ -274,14 +265,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
   };
 
   const listen = listenBind(el);
-
-  const listeners: MoveratedUnlisten[] = [
-    listen('pointerdown', registerPointer),
-    listen('pointerup', disposePointer),
-    listen('pointerleave', disposePointer),
-    listen('pointermove', handlePointer),
-    listen('wheel', handleWheel)
-  ];
+  const listeners: MoveratedUnlisten[] = [];
 
   if (needGesture) {
     listeners.push(
@@ -290,6 +274,14 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
       listen('gesturechange', handleGesture)
     );
   }
+
+  listeners.push(
+    listen('wheel', handleWheel),
+    listen('pointerdown', registerPointer),
+    listen('pointerup', disposePointer),
+    listen('pointerleave', disposePointer),
+    listen('pointermove', handlePointer)
+  );
 
   return () => {
     listeners.forEach((callback) => callback());

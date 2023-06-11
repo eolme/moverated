@@ -36,4 +36,4 @@ export const calculateDistanceFactor = (
   cy: number
 ) => calculateDistance(ax, ay, cx, cy) / calculateDistance(ax, ay, bx, by);
 
-export const calculateExpFactor = (a: number) => Math.exp(-0.01 * a);
+export const calculateExpFactor = (a: number) => Math.sign(a) * (Math.exp(0.01 * Math.abs(a)) - 1);
