@@ -38,7 +38,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite dev",
-    "build:docs": "vite build --outDir=docs/public",
+    "build:docs": "vite build --sourcemap=true --outDir=docs/public",
     "build": "bunchee"
   },
   "devDependencies": {
