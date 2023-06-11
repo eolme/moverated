@@ -29,7 +29,7 @@
   "files": [
     "lib"
   ],
-  "homepage": "https://github.com/eolme/moverated",
+  "homepage": "https://moverated.vercel.app",
   "bugs": "https://github.com/eolme/moverated/issues",
   "repository": {
     "type": "git",
