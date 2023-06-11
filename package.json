@@ -1,17 +1,14 @@
 {
   "name": "moverated",
   "version": "1.0.0",
-  "main": "./lib/moverated.cjs",
-  "module": "./lib/moverated.js",
-  "types": "./lib/moverated.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./lib/moverated.d.ts",
-      "module": "./lib/moverated.js",
-      "import": "./lib/moverated.js",
-      "default": "./lib/moverated.cjs"
-    },
-    "./package.json": "./package.json"
+    "types": "./lib/index.d.ts",
+    "module": "./lib/index.mjs",
+    "import": "./lib/index.mjs",
+    "default": "./lib/index.js"
   },
   "author": {
     "name": "Anton Petrov",
