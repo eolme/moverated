@@ -21,6 +21,11 @@ moverated(document, (move) => {
       dy: number;
       ds: number; // scale
       dr: number; // rotate
+
+      // pointer
+      mx: number; // absolute x path
+      my: number; // absolute y path
+      mt: number; // touch time
     }
   */
 });

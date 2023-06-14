@@ -13,6 +13,7 @@ import {
 } from './listen.js';
 
 import {
+  calculateAbsolute,
   calculateAngleDelta,
   calculateDistanceFactor,
   calculateExpFactor
@@ -24,6 +25,11 @@ import {
 } from './detect.js';
 
 import {
+  EVENT_ID,
+  EVENT_TIME,
+  EVENT_X,
+  EVENT_Y,
+  LENGTH,
   UNKNOWN
 } from './const.js';
 
@@ -42,7 +48,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
   const activePointers: MoveratedPointer[] = [];
 
   const createFastPointerFind = (compare: (a: number, b: number) => boolean) => (id: number) => {
-    for (let i = 0, length = activePointers.length; i < length; ++i) {
+    for (let i = 0, length = activePointers[LENGTH]; i < length; ++i) {
       if (compare(activePointers[i].p, id)) {
         return i;
       }
@@ -58,7 +64,10 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
     dx: number,
     dy: number,
     ds: number,
-    dr: number
+    dr: number,
+    mx: number,
+    my: number,
+    mt: number
   ) => {
     handler({
       x: lastX,
@@ -69,20 +78,24 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
       dx,
       dy,
       ds,
-      dr
+      dr,
+
+      mx,
+      my,
+      mt
     });
   };
 
   const updateGesture = (event: GestureEvent) => {
-    lastGestureX = event.screenX;
-    lastGestureY = event.screenY;
+    lastGestureX = event[EVENT_X];
+    lastGestureY = event[EVENT_Y];
     lastGestureScale = event.scale;
     lastGestureRotate = event.rotation;
   };
 
   const handleGesture = (event: GestureEvent) => {
-    const deltaX = event.screenX - lastGestureX;
-    const deltaY = event.screenY - lastGestureY;
+    const deltaX = event[EVENT_X] - lastGestureX;
+    const deltaY = event[EVENT_Y] - lastGestureY;
     const deltaRotate = event.rotation - lastGestureRotate;
 
     const scaleFactor = event.scale - lastGestureScale;
@@ -96,38 +109,49 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
     updateGesture(event);
 
-    handle(deltaX, deltaY, deltaScale, deltaRotate);
+    handle(deltaX, deltaY, deltaScale, deltaRotate, 0, 0, 0);
   };
 
   const registerPointer = (event: PointerEvent) => {
     if (
       event.ctrlKey ||
-      event.button !== 0
+      event.button > 0
     ) {
       return;
     }
 
-    const id = event.pointerId;
+    const id = event[EVENT_ID];
 
     activePointerId = id;
     activePointers.push({
       p: id,
-      x: event.screenX,
-      y: event.screenY
+
+      x: event[EVENT_X],
+      y: event[EVENT_Y],
+
+      mx: 0,
+      my: 0,
+      mt: event[EVENT_TIME]
     });
   };
 
   const disposePointer = (event: PointerEvent) => {
-    const id = event.pointerId;
+    const id = event[EVENT_ID];
 
     const pointerIndex = fastFindPointer(id);
 
     if (pointerIndex !== UNKNOWN) {
+      if (activePointers[LENGTH] === 1) {
+        const pointer = activePointers[pointerIndex];
+
+        handle(0, 0, 0, 0, pointer.mx, pointer.my, event[EVENT_TIME] - pointer.mt);
+      }
+
       activePointers.splice(pointerIndex, 1);
     }
 
     if (activePointerId === id) {
-      if (activePointers.length === 0) {
+      if (activePointers[LENGTH] < 1) {
         activePointerId = UNKNOWN;
       } else {
         activePointerId = activePointers[0].p;
@@ -136,7 +160,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
   };
 
   const handlePointer = (event: PointerEvent) => {
-    const id = event.pointerId;
+    const id = event[EVENT_ID];
     const pointerIndex = fastFindPointer(id);
 
     if (pointerIndex === UNKNOWN) {
@@ -145,23 +169,26 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
     const pointer = activePointers[pointerIndex];
 
-    const nextX = event.screenX;
-    const nextY = event.screenY;
+    const nextX = event[EVENT_X];
+    const nextY = event[EVENT_Y];
 
     let deltaX = nextX - pointer.x;
     let deltaY = nextY - pointer.y;
 
     if (
       !needMultiTouch ||
-      activePointers.length === 1
+      activePointers[LENGTH] === 1
     ) {
       pointer.x = nextX;
       pointer.y = nextY;
 
+      pointer.mx += calculateAbsolute(deltaX);
+      pointer.my += calculateAbsolute(deltaY);
+
       lastX += deltaX;
       lastY += deltaY;
 
-      handle(deltaX, deltaY, 0, 0);
+      handle(deltaX, deltaY, 0, 0, 0, 0, 0);
 
       return;
     }
@@ -208,7 +235,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
     lastScale *= scaleFactor;
     lastRotate += deltaRotate;
 
-    handle(deltaX, deltaY, deltaScale, deltaRotate);
+    handle(deltaX, deltaY, deltaScale, deltaRotate, 0, 0, 0);
 
     activePointerId = id;
   };
@@ -220,16 +247,16 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
     const deltaY = deltaMulti * event.deltaY;
     const deltaZ = deltaMulti * event.deltaZ;
 
-    const absX = Math.abs(deltaX);
-    const absY = Math.abs(deltaY);
-    const absZ = Math.abs(deltaZ);
+    const absX = calculateAbsolute(deltaX);
+    const absY = calculateAbsolute(deltaY);
+    const absZ = calculateAbsolute(deltaZ);
 
     if (absZ !== 0) {
       const deltaRotate = 0.15 * deltaZ;
 
       lastRotate += deltaRotate;
 
-      handle(0, 0, 0, deltaRotate);
+      handle(0, 0, 0, deltaRotate, 0, 0, 0);
 
       return;
     }
@@ -242,7 +269,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
         lastRotate += deltaRotate;
 
-        handle(0, 0, 0, deltaRotate);
+        handle(0, 0, 0, deltaRotate, 0, 0, 0);
 
         return;
       }
@@ -253,7 +280,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
       lastScale = nextScale;
 
-      handle(0, 0, deltaScale, 0);
+      handle(0, 0, deltaScale, 0, 0, 0, 0);
 
       return;
     }
@@ -261,7 +288,7 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
     lastX += deltaX;
     lastY += deltaY;
 
-    handle(deltaX, deltaY, 0, 0);
+    handle(deltaX, deltaY, 0, 0, 0, 0, 0);
   };
 
   const listen = listenBind(el);
@@ -285,6 +312,6 @@ export const moverated = (el: EventTarget, handler: MoveratedHandler) => {
 
   return () => {
     listeners.forEach((callback) => callback());
-    listeners.length = 0;
+    listeners[LENGTH] = 0;
   };
 };

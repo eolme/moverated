@@ -8,12 +8,21 @@ export type Moverated = {
   dy: number;
   ds: number;
   dr: number;
+
+  mx: number;
+  my: number;
+  mt: number;
 };
 
 export type MoveratedPointer = {
   p: number;
+
   x: number;
   y: number;
+
+  mx: number;
+  my: number;
+  mt: number;
 };
 
 export type MoveratedHandler = (event: Moverated) => void;

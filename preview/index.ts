@@ -17,6 +17,7 @@ const box = $('box');
 
 const absolute = $('absolute');
 const relative = $('relative');
+const pointer = $('pointer');
 
 info.textContent = `gesture: ${needGesture} | multitouch: ${needMultiTouch}`;
 
@@ -34,6 +35,12 @@ moverated(document, (move) => {
       value(move, 'dy'),
       value(move, 'dr'),
       value(move, 'ds')
+    );
+
+    pointer.textContent = print(
+      value(move, 'mx'),
+      value(move, 'my'),
+      value(move, 'mt')
     );
 
     box.style.transform = `translate(${move.x}px, ${move.y}px) rotate(${move.r}deg) scale(${move.s})`;

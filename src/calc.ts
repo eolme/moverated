@@ -1,6 +1,8 @@
 import { RAD_TO_DEG } from './const.js';
 
-export const calculateDegrees = (radians: number) => RAD_TO_DEG * radians;
+export const calculateAbsolute = Math.abs;
+
+const calculateDegrees = (radians: number) => RAD_TO_DEG * radians;
 
 const calculateAngleBetween = (
   ax: number,
@@ -36,4 +38,4 @@ export const calculateDistanceFactor = (
   cy: number
 ) => calculateDistance(ax, ay, cx, cy) / calculateDistance(ax, ay, bx, by);
 
-export const calculateExpFactor = (a: number) => Math.sign(a) * (Math.exp(0.01 * Math.abs(a)) - 1);
+export const calculateExpFactor = (a: number) => Math.sign(a) * (Math.exp(0.01 * calculateAbsolute(a)) - 1);

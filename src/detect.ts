@@ -19,5 +19,5 @@ const global: GlobalContext =
 
 const nav = global.navigator || {};
 
-export const needGesture = ((nav.userAgentData || nav).platform || '').toLowerCase().indexOf('mac') !== UNKNOWN && !!(global.safari || global.webkit);
+export const needGesture = (global.safari || global.webkit) && ((nav.userAgentData || nav).platform || '').toLowerCase().indexOf('mac') > UNKNOWN;
 export const needMultiTouch = !needGesture && nav.maxTouchPoints > 1;
